@@ -106,6 +106,14 @@ TEMPLATE_SSL_FEATURES = """\
     "CAP_tls" = "TRUE";
 """
 
+TEMPLATE_WEBSOCKET_CONFIG = """\
+Port {{
+    vhost = "{hostname}";
+    port = {websocket_port};
+    websocket = yes;
+}};
+"""
+
 
 class NefariousController(BaseServerController, DirectoryBasedController):
     software_name = "Nefarious"
@@ -155,8 +163,6 @@ class NefariousController(BaseServerController, DirectoryBasedController):
         websocket_hostname: Optional[str],
         websocket_port: Optional[int],
     ) -> None:
-        if websocket_hostname is not None or websocket_port is not None:
-            raise NotImplementedByController("Websocket")
         if run_services:
             raise NotImplementedByController("Services")
         assert self.proc is None
@@ -185,6 +191,14 @@ class NefariousController(BaseServerController, DirectoryBasedController):
             )
             ssl_features = TEMPLATE_SSL_FEATURES.format(ssl_pem=ssl_pem)
 
+        # WebSocket listener
+        websocket_config = ""
+        if websocket_hostname is not None and websocket_port is not None:
+            websocket_config = TEMPLATE_WEBSOCKET_CONFIG.format(
+                hostname=websocket_hostname,
+                websocket_port=websocket_port,
+            )
+
         with self.open_file("server.conf") as fd:
             fd.write(
                 TEMPLATE_CONFIG.format(
@@ -192,7 +206,7 @@ class NefariousController(BaseServerController, DirectoryBasedController):
                     port=port,
                     password_field=password_field,
                     pidfile=pidfile,
-                    ssl_config=ssl_config,
+                    ssl_config=ssl_config + websocket_config,
                     ssl_features=ssl_features,
                 )
             )
