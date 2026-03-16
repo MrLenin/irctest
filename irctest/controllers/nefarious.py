@@ -33,6 +33,7 @@ Class {{
     name = "Client";
     pingfreq = 5 minutes;
     sendq = 160000;
+    recvq = 10240;
     maxlinks = 1024;
     fakelagminimum = 0;
     fakelagfactor = 0;
@@ -52,16 +53,13 @@ Operator {{
     class = "Client";
 }};
 
-Features {{
+features {{
     "PPATH" = "{pidfile}";
     "HIS_SERVERNAME" = "My.Little.Server";
-    "HIS_SERVERINFO" = "";
     "MSGID" = "TRUE";
     "HOST_HIDING" = "FALSE";
     "NOIDENT" = "TRUE";
     "CONNEXIT_NOTICES" = "FALSE";
-
-    /* IRCv3 capabilities */
     "CAP_server_time" = "TRUE";
     "CAP_echo_message" = "TRUE";
     "CAP_batch" = "TRUE";
@@ -84,15 +82,12 @@ Features {{
     "CAP_draft_read_marker" = "TRUE";
     "CAP_draft_channel_rename" = "TRUE";
     "CAP_draft_metadata_2" = "TRUE";
-
-    /* Ban exceptions */
     "EXCEPTS" = "TRUE";
-
-    /* Chathistory (enabled if mdbx available) */
+    "NICKDELAY" = "0";
     "CHATHISTORY_DB" = "TRUE";
     "CHATHISTORY_STORE" = "TRUE";
     "CHATHISTORY_PRIVATE" = "TRUE";
-
+    "CHATHISTORY_REQUIRE_AUTH" = "FALSE";
     {ssl_features}
 }};
 """
